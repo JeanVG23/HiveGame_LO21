@@ -73,25 +73,9 @@ public:
         if (coords.getQ() > maxQ) maxQ = coords.getQ();
     }
 
-    // Fonction utilitaire pour afficher les positions possibles
-    void afficherPossibilites(const std::string& action, const std::vector<Hexagon>& positions) const {
-        std::cout << action << " :\n";
-        for (const Hexagon& hex : positions) {
-            std::cout << "[" << hex.getQ() << ", " << hex.getR() << "]\n";
-        }
-        afficherPlateauAvecPossibilites(positions);
-    }
-
-    void afficherPossibiliteDeplacement(Insecte* insecte) {
-        try {
-            std::vector<Hexagon> deplacements = insecte->deplacementsPossibles(plateauMap);
-            afficherPossibilites("Déplacements possibles pour " + insecte->getNom(), deplacements);
-        } catch (const std::exception& e) {
-            std::cerr << "Erreur lors de la vérification des déplacements : " << e.what() << std::endl;
-        }
-    }
-
     void afficherPossibilitePlacement(Insecte* insecte);
+    void afficherPlateauAvecPossibilites(const std::vector<Hexagon>& emplacementsPossibles);
+    void afficherPossibiliteDeplacement(Insecte* insecte, const std::map<Hexagon, Insecte*>& plateau);
 
     Insecte* getInsecteAtCoords(int q , int r){
         Hexagon h(q , r);

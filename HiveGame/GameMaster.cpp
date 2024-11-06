@@ -121,7 +121,7 @@ int GameMaster::getInputForAction(Joueur* current) {
 void GameMaster::deplacerPion(Joueur* current) {
     plateau.afficherPlateau();
     Insecte* currentInsecte = selectionnerInsecte();
-    plateau.afficherPossibiliteDeplacement(currentInsecte);
+    plateau.afficherPossibiliteDeplacement(currentInsecte, plateau.getPlateauMap());
     bool deplacementValide = false;
     Hexagon nouvellePosition;
 

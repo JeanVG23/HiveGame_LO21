@@ -48,6 +48,20 @@ void Plateau::ajouterInsecte(Insecte* insecte, Hexagon position) {
     }
 }
 
+void Plateau::afficherPossibiliteDeplacement(Insecte* insecte, const std::map<Hexagon, Insecte*>& plateau) {
+    // Récupérer les déplacements possibles
+    std::vector<Hexagon> deplacements = insecte->deplacementsPossibles(plateau);
+
+    // Afficher les déplacements
+    std::cout << "Déplacements possibles pour " << insecte->getNom() << " :\n";
+    for (const Hexagon& hex : deplacements) {
+        std::cout << "[" << hex.getQ() << ", " << hex.getR() << "]\n";
+    }
+
+    // Afficher visuellement sur le plateau si besoin
+    afficherPlateauAvecPossibilites(deplacements);
+}
+
 void Plateau::afficherPossibilitePlacement(Insecte* insecte) {
     std::vector<Hexagon> placements;
 
@@ -67,20 +81,46 @@ void Plateau::afficherPossibilitePlacement(Insecte* insecte) {
     afficherPlateauAvecPossibilites(placements);
 }
 
-void Plateau::afficherPlateauAvecPossibilites(const std::vector<Hexagon>& emplacementsPossibles) const {
-    // Créer un nouveau plateau temporaire pour afficher les possibilités
-    Plateau plateauTemp = *this;
+void Plateau::afficherPlateauAvecPossibilites(const std::vector<Hexagon>& emplacementsPossibles) {
+    // Créer une copie temporaire du plateau
+    std::map<Hexagon, Insecte*> plateauTemp = plateauMap;
 
-    // Ajouter les emplacements possibles sous forme d'insectes "X" sur le plateau temporaire
+    // Ajouter des insectes fictifs aux emplacements possibles
     for (const Hexagon& hex : emplacementsPossibles) {
-        if (plateauTemp.plateauMap.find(hex) == plateauTemp.plateauMap.end()) {
-            plateauTemp.plateauMap[hex] = new InsecteFictif(hex);
+        if (plateauTemp.find(hex) == plateauTemp.end()) { // Si l'emplacement est vide dans le plateau original
+            plateauTemp[hex] = new InsecteFictif(hex);    // Ajouter un insecte fictif
         }
     }
 
-    // Afficher le plateau temporaire avec les emplacements possibles
-    plateauTemp.afficherPlateau();
+    // Étendre les limites du plateau pour inclure tous les emplacements possibles
+    for (const auto& [position, _] : plateauTemp) {
+        if (position.getQ() < minQ) minQ = position.getQ();
+        if (position.getQ() > maxQ) maxQ = position.getQ();
+        if (position.getR() < minR) minR = position.getR();
+        if (position.getR() > maxR) maxR = position.getR();
+    }
 
-    // Nettoyage automatique du plateau temporaire lorsqu'il est hors de portée
+    // Afficher le plateau avec les insectes fictifs
+    for (int r = minR; r <= maxR; ++r) {
+        if (r % 2 != 0) std::cout << "  ";  // Décalage pour aligner les hexagones visuellement
+
+        for (int q = minQ; q <= maxQ; ++q) {
+            Hexagon h(q, r);
+            if (plateauTemp.count(h)) {
+                std::cout << plateauTemp[h]->getNom() << "[" << h.getQ() << "," << h.getR() << "] ";
+            } else {
+                std::cout << ".[" << h.getQ() << "," << h.getR() << "] ";
+            }
+        }
+        std::cout << std::endl;
+    }
+
+    // Nettoyer les insectes fictifs ajoutés au plateau temporaire
+    for (const Hexagon& hex : emplacementsPossibles) {
+        if (plateauTemp[hex]->getNom() == "?") {  // Vérifie si c'est un insecte fictif
+            delete plateauTemp[hex];
+            plateauTemp.erase(hex);
+        }
+    }
 }
 

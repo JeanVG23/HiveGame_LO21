@@ -48,3 +48,37 @@
 	"Plateau.h"
 	"GameMaster.h"
 
+1730684810 source:c:\users\jean-\desktop\avion\lo21\hivegame_lo21-main\hivegame_lo21\hivegame\main.cpp
+	"Plateau.h"
+	"GameMaster.h"
+
+1730738932 c:\users\jean-\desktop\avion\lo21\hivegame_lo21-main\hivegame_lo21\hivegame\plateau.h
+	<iostream>
+	<map>
+	<vector>
+	"Hexagon.h"
+	"Insecte.h"
+
+1730341061 c:\users\jean-\desktop\avion\lo21\hivegame_lo21-main\hivegame_lo21\hivegame\hexagon.h
+	<cstdlib>
+	<iostream>
+
+1730738932 c:\users\jean-\desktop\avion\lo21\hivegame_lo21-main\hivegame_lo21\hivegame\insecte.h
+	"Hexagon.h"
+	<string>
+	<vector>
+	<map>
+	<set>
+	<algorithm>
+
+1730738932 c:\users\jean-\desktop\avion\lo21\hivegame_lo21-main\hivegame_lo21\hivegame\gamemaster.h
+	"Joueur.h"
+	"Plateau.h"
+	<iostream>
+	<memory>
+	<limits>
+
+1730738932 c:\users\jean-\desktop\avion\lo21\hivegame_lo21-main\hivegame_lo21\hivegame\joueur.h
+	"Insecte.h"
+	<vector>
+

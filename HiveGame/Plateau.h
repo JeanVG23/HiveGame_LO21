@@ -6,32 +6,30 @@
 #include <vector>
 #include "Hexagon.h"
 #include "Insecte.h"
+#include "Joueur.h"
+
 class Plateau {
 private:
     std::map<Hexagon, Insecte*> plateauMap;
-    std::vector<Insecte*> insectesSurPlateau; // On peut supprimer et faire un deck de joueur, quand un joueur pose un insecte, alors l'insecte disparait de son deck grâce à ajouter Insecte
+    std::vector<Insecte*> insectesSurPlateau; // On peut supprimer et faire un deck de joueur, quand un joueur pose un insecte, alors l'insecte disparait de son deck grï¿½ce ï¿½ ajouter Insecte
     //std::vector<Action*> historiqueDesActions;
     //std::vector<Extension*> extensionsActivees;
     int nombreRetoursArriere;
-    int nombreTours;
+    unsigned int nombreTours;
     int minR, maxR, minQ, maxQ;
 
 public:
-    Plateau() : nombreRetoursArriere(3), nombreTours(0), minR(0), maxR(0), minQ(0), maxQ(0) {} // Initialisation par défaut
+    Plateau() : nombreRetoursArriere(3), nombreTours(0), minR(0), maxR(0), minQ(0), maxQ(0) {} // Initialisation par dï¿½faut
+    unsigned int getTour(){return nombreTours;}
+    void incrementerTour(){++nombreTours;}
 
-    void ajouterInsecte(Insecte* insecte) {
-        std::cout<< "test" << insecte->getNom() << std::endl;
-        plateauMap[insecte->getCoords()] = insecte; // Ajouter à la carte
-        std::cout<< "test" << plateauMap[insecte->getCoords()] << std::endl;
-        insectesSurPlateau.push_back(insecte); // Garder une référence à l'insecte
-        mettreAJourLimites(insecte->getCoords()); // Mettre à jour les limites lors de l'ajout
-    }
+    void ajouterInsecte(Insecte* insecte, Hexagon position);
 
     void deplacerInsecte(Insecte* insecte, const Hexagon& nouvellePosition) {
         plateauMap.erase(insecte->getCoords()); // Retirer l'insecte de sa position actuelle
-        insecte->setCoords(nouvellePosition); // Mettre à jour les coordonnées de l'insecte
-        plateauMap[nouvellePosition] = insecte; // Ajouter l'insecte à la nouvelle position
-        mettreAJourLimites(nouvellePosition); // Mettre à jour les limites
+        insecte->setCoords(nouvellePosition); // Mettre ï¿½ jour les coordonnï¿½es de l'insecte
+        plateauMap[nouvellePosition] = insecte; // Ajouter l'insecte ï¿½ la nouvelle position
+        mettreAJourLimites(nouvellePosition); // Mettre ï¿½ jour les limites
     }
 
 
@@ -40,36 +38,60 @@ public:
         currentInsecte->setDessus(newInsecte);
         newInsecte->setCoords(currentInsecte->getCoords());
         plateauMap[newInsecte->getCoords()] = newInsecte;
-        mettreAJourLimites(newInsecte->getCoords()); // Mettre à jour les limites lors de la superposition
+        mettreAJourLimites(newInsecte->getCoords()); // Mettre ï¿½ jour les limites lors de la superposition
     }
 
 
     void afficherPlateau() const {
         // Utiliser les limites minR, maxR, minQ, maxQ pour afficher le plateau
         for (int r = minR; r <= maxR; ++r) {
-            if (r % 2 != 0) std::cout << "  "; // pour essayer de faire ressembler à un hexagone ptdr c immonde
+            if (r % 2 != 0) std::cout << "  "; // pour essayer de faire ressembler ï¿½ un hexagone ptdr c immonde
 
             for (int q = minQ; q <= maxQ; ++q) {
                 Hexagon h(q, r);
                 if (plateauMap.count(h)) {
-                    std::cout << plateauMap.at(h)->getNom() << "[" << h.getQ() << " " << h.getR() << "] "; // L'insecte existe alors je récupère son nom
+                    std::cout << plateauMap.at(h)->getNom() << "[" << h.getQ() << " " << h.getR() << "] "; // L'insecte existe alors je rï¿½cupï¿½re son nom
                 } else {
-                    std::cout << ".[" << h.getQ() << " " << h.getR() << "] "; // Aucun insecte à cet emplacement
+                    std::cout << ".[" << h.getQ() << " " << h.getR() << "] "; // Aucun insecte ï¿½ cet emplacement
                 }
             }
             std::cout << std::endl;
         }
     }
+
+    void afficherPlateauAvecPossibilites(const std::vector<Hexagon>& emplacementsPossibles) const;
+
     int getMinR() const { return minR; }
     int getMaxR() const { return maxR; }
     int getMinQ() const { return minQ; }
     int getMaxQ() const { return maxQ; }
+
     void mettreAJourLimites(const Hexagon& coords) {
         if (coords.getR() < minR) minR = coords.getR();
         if (coords.getR() > maxR) maxR = coords.getR();
         if (coords.getQ() < minQ) minQ = coords.getQ();
         if (coords.getQ() > maxQ) maxQ = coords.getQ();
     }
+
+    // Fonction utilitaire pour afficher les positions possibles
+    void afficherPossibilites(const std::string& action, const std::vector<Hexagon>& positions) const {
+        std::cout << action << " :\n";
+        for (const Hexagon& hex : positions) {
+            std::cout << "[" << hex.getQ() << ", " << hex.getR() << "]\n";
+        }
+        afficherPlateauAvecPossibilites(positions);
+    }
+
+    void afficherPossibiliteDeplacement(Insecte* insecte) {
+        try {
+            std::vector<Hexagon> deplacements = insecte->deplacementsPossibles(plateauMap);
+            afficherPossibilites("DÃ©placements possibles pour " + insecte->getNom(), deplacements);
+        } catch (const std::exception& e) {
+            std::cerr << "Erreur lors de la vÃ©rification des dÃ©placements : " << e.what() << std::endl;
+        }
+    }
+
+    void afficherPossibilitePlacement(Insecte* insecte);
 
     Insecte* getInsecteAtCoords(int q , int r){
         Hexagon h(q , r);
@@ -105,12 +127,12 @@ public:
     bool estEntouree(Insecte *insecte) {
         std::vector<Hexagon> voisins = getVoisinsInsectePlateau(insecte);
         for (const Hexagon& voisin : voisins) {
-            // Vérifiez si la case voisine est occupée
+            // Vï¿½rifiez si la case voisine est occupï¿½e
             if (plateauMap.find(voisin) == plateauMap.end()) {
-                return false; // Si une case voisine est vide, la reine n'est pas entourée
+                return false; // Si une case voisine est vide, la reine n'est pas entourï¿½e
             }
         }
-        return true; // Toutes les cases voisines sont occupées
+        return true; // Toutes les cases voisines sont occupï¿½es
     }
 
 };

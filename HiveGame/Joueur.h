@@ -13,9 +13,9 @@ private:
 public:
     Joueur(const std::string& nom) : nom(nom) , deck(deckDeBase()) {}
     Joueur(std::string n, std::vector<Insecte*> d) {
-        if (n.empty()) {throw std::invalid_argument("Le nom ne peut pas être vide.");}
+        if (n.empty()) {throw std::invalid_argument("Le nom ne peut pas ï¿½tre vide.");}
         nom = n;
-        // Si un deck est fourni, l'utiliser ; sinon, utiliser le deck par défaut. Permet de gérer les extensions en cas de besoin.
+        // Si un deck est fourni, l'utiliser ; sinon, utiliser le deck par dï¿½faut. Permet de gï¿½rer les extensions en cas de besoin.
         deck = d.empty() ? deckDeBase() : d;
     }
     const std::string &getName() const {return nom;}
@@ -38,11 +38,22 @@ public:
         if (i >= deck.size()){return nullptr;}
         return deck[i];
     }
+
+    //Cherche si un insecte passÃ© en parametre est dans le deck du joueur
+    Insecte* contientInsecte(const std::string& nomInsecte) const {
+        for (Insecte* insecte : deck) {
+            if (insecte->getNom() == nomInsecte) {
+                return insecte;
+            }
+        }
+        return nullptr;
+    }
+
     void retirerInsecte(unsigned int index) {
         if (index < deck.size()) {
             deck.erase(deck.begin() + index);  // Retirer du deck
         } else {
-            std::cout << "Index invalide. Aucune action effectuée." << std::endl;
+            std::cout << "Index invalide. Aucune action effectuï¿½e." << std::endl;
         }
     }
 

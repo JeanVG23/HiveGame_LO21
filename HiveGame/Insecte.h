@@ -43,9 +43,12 @@ public:
     void setCoords(Hexagon newCoords){
         coords = newCoords;
     }
+
     virtual std::vector<Hexagon> deplacementsPossibles(std::map<Hexagon, Insecte*> p) = 0;
 
-    Joueur *getOwner(){return owner;}
+    Joueur *getOwner() const {return owner;}
+
+    std::vector<Hexagon> placementsPossiblesDeBase(const std::map<Hexagon, Insecte*>& plateau) const;
 };
 
 
@@ -98,6 +101,18 @@ public:
     std::vector<Hexagon> deplacementsPossibles(std::map<Hexagon, Insecte*> p);
 };
 
+class InsecteFictif : public Insecte {
+public:
+    InsecteFictif(Hexagon coords) : Insecte("X", coords) {}
+
+    // Implémentation correcte de la fonction pure virtuelle
+    std::vector<Hexagon> deplacementsPossibles(std::map<Hexagon, Insecte*> p) override {
+        return {}; // Pas de déplacement pour cet insecte fictif
+    }
+};
+
+
+
 std::vector<Hexagon> deplacementsPossiblesReineAbeille(Hexagon coords, std::map<Hexagon, Insecte*> p);
 std::vector<Hexagon> deplacementsPossiblesFourmi(Hexagon coords, std::map<Hexagon, Insecte*> p, std::vector<Hexagon>& cheminInsecte, std::set<Hexagon>& deplacements);
 std::vector<Hexagon> deplacementsPossiblesSauterelle(Hexagon coords, std::map<Hexagon, Insecte*> p);
@@ -106,7 +121,7 @@ std::vector<Hexagon> deplacementsPossiblesScarabee(Hexagon coords, std::map<Hexa
 std::vector<Hexagon> deplacementsPossiblesAraignee(Hexagon coords, std::map<Hexagon, Insecte*> p);
 std::vector<Hexagon> deplacementsPossiblesMoustique(Hexagon coords, std::map<Hexagon, Insecte*> p);
 std::vector<Hexagon> getVoisins(Hexagon coords);
-std::vector<Hexagon> casesAdjacentesVides(Hexagon coords, std::map<Hexagon, Insecte*> p);
+std::vector<Hexagon> casesAdjacentesVides(const Hexagon& coords, const std::map<Hexagon, Insecte*>& plateau);
 std::vector<Hexagon> casesAdjacentesOccupees(Hexagon coords, std::map<Hexagon, Insecte*> p);
 std::vector<Hexagon> getLongueurChaine(Insecte *i, std::map<Hexagon, Insecte*> p, std::vector<Hexagon> chemin);
 bool getChaineBrisee(Insecte *i, std::map<Hexagon, Insecte*> p, std::vector<Hexagon> chemin);

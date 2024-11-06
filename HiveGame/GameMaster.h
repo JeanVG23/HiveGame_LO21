@@ -14,12 +14,11 @@ private:
     Joueur *joueur1;
     Joueur *joueur2;
     unsigned int mode;
-    unsigned int tour;
     void deplacerPion(Joueur* current);
     void placerPion(Joueur* current, bool b);
 public:
     bool hasPlayQueen(Joueur *currentPlayer);
-    GameMaster() : joueur1(nullptr), joueur2(nullptr) , mode(0) {}
+    GameMaster() : joueur1(nullptr), joueur2(nullptr) , mode(0){}
     Insecte* selectionnerInsecte();
     GameMaster(Plateau plateau) : joueur1(nullptr), joueur2(nullptr) , mode(0) , plateau(plateau){}
     void startGame();
@@ -28,7 +27,7 @@ public:
     void jouer();
     int getInputForAction(Joueur* current);
     bool detectWinner(Joueur *current);
-    // Destructeur pour libérer la mémoire
+    // Destructeur pour libï¿½rer la mï¿½moire
     ~GameMaster();
 };
 
